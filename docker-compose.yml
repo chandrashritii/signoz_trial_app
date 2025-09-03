@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # SigNoz Services
+  zookeeper:
+    image: bitnami/zookeeper:3.7
+    container_name: signoz-zookeeper
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    volumes:
+      - zookeeper-data:/bitnami/zookeeper
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:22.8-alpine
+    container_name: signoz-clickhouse
+    environment:
+      - CLICKHOUSE_DB=signoz_traces
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    ports:
+      - "9000:9000"
+      - "8123:8123"
+
+  alertmanager:
+    image: signoz/alertmanager:0.23.4
+    container_name: signoz-alertmanager
+    volumes:
+      - alertmanager-data:/data
+    command:
+      - --queryURL=http://query-service:8085
+      - --storage.path=/data
+
+  query-service:
+    image: signoz/query-service:0.34.0
+    container_name: signoz-query-service
+    command: ["-config=/root/config/prometheus.yml"]
+    volumes:
+      - query-service-data:/var/lib/signoz
+    environment:
+      - ClickHouseUrl=tcp://clickhouse:9000
+    ports:
+      - "6060:6060"
+      - "8085:8085"
+    depends_on:
+      - clickhouse
+
+  frontend:
+    image: signoz/frontend:0.34.0
+    container_name: signoz-frontend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - query-service
+
+  otel-collector:
+    image: signoz/otelcontribcol:latest
+    container_name: signoz-otel-collector
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./config/otel-collector.yml:/etc/otel-collector-config.yml
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+      - "8888:8888"   # Prometheus metrics
+    depends_on:
+      - clickhouse
+
+volumes:
+  zookeeper-data:
+  clickhouse-data:
+  alertmanager-data:
+  query-service-data:
