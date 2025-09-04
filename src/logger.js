@@ -1,13 +1,13 @@
 const winston = require('winston');
 const { trace } = require('@opentelemetry/api');
 
+// Simplified trace format that works better with OTel instrumentation
 const traceFormat = winston.format((info) => {
   const activeSpan = trace.getActiveSpan();
   if (activeSpan) {
     const spanContext = activeSpan.spanContext();
     info.traceId = spanContext.traceId;
     info.spanId = spanContext.spanId;
-    info.traceFlags = spanContext.traceFlags;
   }
   return info;
 });
@@ -20,22 +20,12 @@ const logger = winston.createLogger({
     winston.format.errors({ stack: true }),
     winston.format.json()
   ),
-  defaultMeta: { 
+  defaultMeta: {
     service: process.env.SERVICE_NAME || 'ecommerce-app',
     environment: process.env.NODE_ENV || 'development'
   },
   transports: [
-    new winston.transports.File({ 
-      filename: 'logs/error.log', 
-      level: 'error',
-      maxsize: 5242880,
-      maxFiles: 5 
-    }),
-    new winston.transports.File({ 
-      filename: 'logs/combined.log',
-      maxsize: 5242880,
-      maxFiles: 5 
-    }),
+    // Keep console transport for local debugging
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),

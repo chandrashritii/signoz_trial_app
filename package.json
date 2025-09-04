@@ -4,6 +4,9 @@
   "description": "E-commerce app demonstrating SigNoz OpenTelemetry integration",
   "main": "src/app.js",
   "scripts": {
+    "test:api": "./scripts/api_testing.sh",
+    "demo": "./scripts/demo_scenarios.sh",
+    "load": "./scripts/generate_load.sh",
     "start": "node -r ./src/tracing.js src/app.js",
     "start:payment": "PORT=3001 node -r ./src/tracing.js src/payment_service.js",
     "start:inventory": "PORT=3002 node -r ./src/tracing.js src/inventory_service.js",
@@ -11,19 +14,21 @@
     "test": "echo \"Tests not implemented yet\""
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "winston": "^3.11.0",
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.40.3",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.203.0",
+    "@opentelemetry/exporter-otlp-http": "^0.26.0",
+    "@opentelemetry/instrumentation-winston": "^0.32.0",
+    "@opentelemetry/resources": "^1.18.1",
+    "@opentelemetry/sdk-logs": "^0.203.0",
+    "@opentelemetry/sdk-node": "^0.45.1",
+    "@opentelemetry/semantic-conventions": "^1.18.1",
     "axios": "^1.6.2",
     "cors": "^2.8.5",
-    "helmet": "^7.0.0", 
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
     "uuid": "^9.0.1",
-    "@opentelemetry/api": "^1.7.0",
-    "@opentelemetry/sdk-node": "^0.45.1",
-    "@opentelemetry/auto-instrumentations-node": "^0.40.3",
-    "@opentelemetry/exporter-otlp-http": "^0.26.0",
-    "@opentelemetry/resources": "^1.18.1",
-    "@opentelemetry/semantic-conventions": "^1.18.1",
-    "@opentelemetry/instrumentation-winston": "^0.32.0"
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

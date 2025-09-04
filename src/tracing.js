@@ -1,9 +1,11 @@
+// SIMPLE WORKING VERSION - Just add Winston instrumentation
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-otlp-http');
 const { OTLPMetricExporter } = require('@opentelemetry/exporter-otlp-http');
 const { Resource } = require('@opentelemetry/resources');
 const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventions');
+const { WinstonInstrumentation } = require('@opentelemetry/instrumentation-winston');
 
 // Determine service name from command line or default
 const serviceName = process.argv.find(arg => arg.includes('payment_service.js')) ? 'payment_service' :
@@ -26,9 +28,11 @@ const sdk = new NodeSDK({
   instrumentations: [
     getNodeAutoInstrumentations({
       '@opentelemetry/instrumentation-fs': {
-        enabled: false,
+        enabled: true,
       },
     }),
+    // Add Winston instrumentation for log-trace correlation
+    new WinstonInstrumentation()
   ],
 });
 

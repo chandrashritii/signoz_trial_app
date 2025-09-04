@@ -360,6 +360,42 @@ app.get('/users/:userId/orders', (req, res) => {
   res.json({ orders: userOrders, total: userOrders.length });
 });
 
+const inventory = new Map([
+  ['laptop-001', { id: 'laptop-001', name: 'MacBook Pro', price: 1299, stock: 10, reserved: 0 }],
+  ['phone-001', { id: 'phone-001', name: 'iPhone 14', price: 999, stock: 25, reserved: 0 }],
+  ['tablet-001', { id: 'tablet-001', name: 'iPad Air', price: 599, stock: 15, reserved: 0 }],
+  ['watch-001', { id: 'watch-001', name: 'Apple Watch', price: 399, stock: 30, reserved: 0 }],
+  ['headphones-001', { id: 'headphones-001', name: 'AirPods Pro', price: 249, stock: 50, reserved: 0 }]
+]);
+
+
+app.get('/inventory', (req, res) => {
+  const span = trace.getTracer('order-service').startSpan('get_inventory', undefined, context.active());
+  try {
+    const products = Array.from(inventory.values()).map(item => ({
+      ...item,
+      available: item.stock - item.reserved
+    }));
+    logger.info('Inventory retrieved', { productCount: products.length });
+    res.json({ products, total: products.length });
+  } finally {
+    span.end();
+  }
+});
+
+app.get('/inventory/alerts', (req, res) => {
+  const threshold = Number(req.query.threshold) || 5;
+  const lowStockProducts = Array.from(inventory.values())
+    .filter(item => (item.stock - item.reserved) <= threshold)
+    .map(item => ({
+      id: item.id,
+      name: item.name,
+      available: item.stock - item.reserved
+    }));
+
+  res.json({ alerts: lowStockProducts, total: lowStockProducts.length, threshold });
+});
+
 // Error handling middleware
 app.use((error, req, res, next) => {
   const span = trace.getActiveSpan();
