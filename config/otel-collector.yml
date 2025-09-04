@@ -30,10 +30,10 @@ processors:
         action: insert
 
 exporters:
-  otlp:
-    endpoint: https://ingest.in.signoz.cloud:443
-    headers:
-      signoz-ingestion-key: 0MTgiVc9TKfDOGWf8YB9KbfPbT19Ye1jMI6u
+  # otlp:
+  #   endpoint: https://ingest.{region}.signoz.cloud:443
+  #   headers:
+  #     signoz-ingestion-key: {api_key}}
   clickhouse:
     endpoint: tcp://clickhouse:9000?dial_timeout=10s&compress=lz4
     database: signoz_traces
