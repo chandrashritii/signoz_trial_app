@@ -1,3 +1,22 @@
+## SigNoz NodeJS Demo
+
+### **Create a realistic e-commerce application** with - 
+
+* 3 microservices: Order, Payment, and Inventory services
+* Automatic trace generation using OpenTelemetry
+* Winston logging with trace context injection
+* SigNoz integration for observability
+
+#### **Under the Hood** 
+
+* **OpenTelemetry does the heavy lifting** - Automatically creates traces for HTTP calls
+* **Custom logger formatter** - Adds trace IDs to every log message  
+* **Span attributes** - Used to add business context to traces for better filtering
+* **Consistent headers** - Passes context between services
+* **SigNoz connects everything** - Links traces and logs automatically
+
+![application flow diagram](./app_flow_diagram.png)
+  
 ### Prerequisites
 
     Docker and Docker Compose
@@ -38,24 +57,9 @@ npm run start:payment
 npm run start:inventory
 ```
 You should be able to observe an output like this - 
-![screenshot of cmd output](./run-output.jpg)
+![screenshot of cmd output](./run-output.png)
 
 Notice how the console logs now show trace context!
-
-### **Create a realistic e-commerce application** with - 
-
-* 3 microservices: Order, Payment, and Inventory services
-* Automatic trace generation using OpenTelemetry
-* Winston logging with trace context injection
-* SigNoz integration for observability
-
-#### **Under the Hood** 
-
-* **OpenTelemetry does the heavy lifting** - Automatically creates traces for HTTP calls
-* **Custom logger formatter** - Adds trace IDs to every log message  
-* **Span attributes** - Used to add business context to traces for better filtering
-* **Consistent headers** - Passes context between services
-* **SigNoz connects everything** - Links traces and logs automatically
 
 ### **Testing and Sample data generation** - 
 
@@ -95,3 +99,4 @@ SIGNOZ_ACCESS_TOKEN={your access token}
 OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://ingest.{region}.signoz.cloud:443/v1/traces
 OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=https://ingest.{region}.signoz.cloud:443/v1/metrics
 ```
+
