@@ -15,7 +15,7 @@
 * **Consistent headers** - Passes context between services
 * **SigNoz connects everything** - Links traces and logs automatically
 
-![application flow diagram](./app_flow_diagram.png)
+![application flow diagram](./screenshots/app_flow_diagram.png)
   
 ### Prerequisites
 
@@ -57,7 +57,7 @@ npm run start:payment
 npm run start:inventory
 ```
 You should be able to observe an output like this - 
-![screenshot of cmd output](./run-output.png)
+![screenshot of cmd output](./screenshots/run-output.png)
 
 Notice how the console logs now show trace context!
 
@@ -99,4 +99,5 @@ SIGNOZ_ACCESS_TOKEN={your access token}
 OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://ingest.{region}.signoz.cloud:443/v1/traces
 OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=https://ingest.{region}.signoz.cloud:443/v1/metrics
 ```
+
 
